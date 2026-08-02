@@ -231,7 +231,8 @@ svg { width: 100%; height: 100%; }
   <h3>📈 CASE STATISTICS</h3>
   <div class="stat-row"><span class="stat-label">Total Laundered to Binance:</span><span class="stat-value">$1,528,045 USDT</span></div>
   <div class="stat-row"><span class="stat-label">Common Hub Balance:</span><span class="stat-value">$218,411,778 USDT</span></div>
-  <div class="stat-row"><span class="stat-label">Secondary Hub:</span><span class="stat-value">$104,918,853 USDT</span></div>
+  <div class="stat-row"><span class="stat-label">Secondary Hub (KuCoin 4):</span><span class="stat-value">$104.9M USDT</span></div>
+  <div class="stat-row"><span class="stat-label">KuCoin Outgoing:</span><span class="stat-value">$10.7M USDT → 1,145 dest.</span></div>
   <div class="stat-row"><span class="stat-label">ETH Deposits (6 txns):</span><span class="stat-value">$3,025.82 USDT</span></div>
   <div class="stat-row"><span class="stat-label">Distribution Wallets:</span><span class="stat-value">32 → All to Binance</span></div>
   <div class="stat-row"><span class="stat-label">Funding Sources:</span><span class="stat-value">5 → Scammer Wallet</span></div>
@@ -275,10 +276,10 @@ const DATA = {
       info: "Network Operator Hub - Central Treasury\nBalance: $218,411,778 USDT + 71,546 TRX\n356M TRC20 transfers\nFunds ALL 5 scammer sources", 
       balance: "$218,411,778 USDT" },
 
-    // Secondary Hub
-    { id: "secondary_hub", label: "2nd HUB\n$104M", type: "hub", network: "tron", layer: "hub",
+    // Secondary Hub (KuCoin 4)
+    { id: "secondary_hub", label: "KUCOIN 4\n$104M", type: "hub", network: "tron", layer: "hub",
       address: "TUpHuDkiCCmwaTZBHZvQdwWzGNm5t8J2b9",
-      info: "Secondary Consolidation Hub\nBalance: $104,918,853 USDT\n32.2M TRC20 transfers\nCreated: 2022-01-26",
+      info: "Secondary Hub = KuCoin Hot Wallet 4\nBalance: $104,918,853 USDT + 140,926 TRX\n32.2M TRC20 transfers\nCreated: 2022-01-26\nTotal Outgoing: $10,699,423 USDT to 1,145 destinations\nTop destination: TVLvjHDq ($3.25M)\nSecond: TUY8wCWs ($2.7M)",
       balance: "$104,918,853 USDT" },
 
     // Hub Outgoing Destinations
@@ -557,21 +558,21 @@ const DATA = {
     { source: "dist3", target: "binance", hash: "870fa7bc79726375be2082cf7fa02bb85a3dd652d3a235e641ad8a9de41d28a2", amount: 10873, network: "tron", label: "$10.9K→Binance (7 txns)" },
     { source: "dist4", target: "binance", hash: "8f496e192a68531e4c4575133916c0dd62c7d1b75382dcd4893f83689bff21f6", amount: 7888, network: "tron", label: "$7.9K→Binance (17 txns)" },
     { source: "dist5", target: "binance", hash: "2317bfa995ab0885b719f3395f6ed3f8f50124cc9f3ed9bb7b0819364d3c28e5", amount: 7158, network: "tron", label: "$7.2K→Binance (15 txns)" },
-    { source: "dist6", target: "binance", hash: "TRONSCAN_LINK", amount: 5432, network: "tron", label: "$5.4K→Binance (3 txns)" },
-    { source: "dist7", target: "binance", hash: "TRONSCAN_LINK", amount: 4869, network: "tron", label: "$4.9K→Binance (14 txns)" },
+    { source: "dist6", target: "binance", hash: "816f484ec09729fba960ed6700ce89937755d7a583cc287542851042c28ab3d5", amount: 5432, network: "tron", label: "$5.4K→Binance (3 txns)" },
+    { source: "dist7", target: "binance", hash: "c8dbad1f2faddc46b4175b8af192d4ca9bcc920e4d20d385714fabd2a303996d", amount: 4869, network: "tron", label: "$4.9K→Binance (14 txns)" },
     { source: "dist8", target: "binance", hash: "cbf8e27dd3232572c086f236a86f7c755b338c57f2b846030c4da523a9f12626", amount: 4752, network: "tron", label: "$4.8K→Binance (3 txns)" },
-    { source: "dist9", target: "binance", hash: "TRONSCAN_LINK", amount: 3248, network: "tron", label: "$3.2K→Binance (5 txns)" },
-    { source: "dist10", target: "binance", hash: "TRONSCAN_LINK", amount: 1523, network: "tron", label: "$1.5K→Binance (6 txns)" },
+    { source: "dist9", target: "binance", hash: "828346ace81e21e830261fc37a2eb9367e1ba4561a24c28dfa3be392ea35a784", amount: 3248, network: "tron", label: "$3.2K→Binance (5 txns)" },
+    { source: "dist10", target: "binance", hash: "1433748e0fb9153acc0196c9db09cc3a44a0904f8c64cc071900c6a03d0f76aa", amount: 1523, network: "tron", label: "$1.5K→Binance (6 txns)" },
     { source: "dist11", target: "binance", hash: "ef5f0b7b96aefecb66145ab343fb5b7facc97dd443c1cab5fe3f6f6f8d5842ce", amount: 1441, network: "tron", label: "$1.4K→Binance (4 txns)" },
-    { source: "dist12", target: "binance", hash: "TRONSCAN_LINK", amount: 1170, network: "tron", label: "$1.2K→Binance (3 txns)" },
-    { source: "dist13", target: "binance", hash: "TRONSCAN_LINK", amount: 1156, network: "tron", label: "$1.2K→Binance (5 txns)" },
-    { source: "dist14", target: "binance", hash: "TRONSCAN_LINK", amount: 1165, network: "tron", label: "$1.2K→Binance (4 txns)" },
-    { source: "dist15", target: "binance", hash: "TRONSCAN_LINK", amount: 1164, network: "tron", label: "$1.2K→Binance (4 txns)" },
+    { source: "dist12", target: "binance", hash: "3b69aabd69388ad81e1cb7010a4a3685890accba70e7c61bc92d6b483ec8abf9", amount: 1170, network: "tron", label: "$1.2K→Binance (3 txns)" },
+    { source: "dist13", target: "binance", hash: "b33ebd960a0efb96c220f0936aa69991602c708c5ff50fe9cd0d544d95ada9ac", amount: 1156, network: "tron", label: "$1.2K→Binance (5 txns)" },
+    { source: "dist14", target: "binance", hash: "d3604330e67a706e2a525e54cace96f0183f73d8b87a5af413acf8ab11a2f871", amount: 1165, network: "tron", label: "$1.2K→Binance (4 txns)" },
+    { source: "dist15", target: "binance", hash: "b8d1a203c5f680f4a3b56be59b6d71a2a137eda35bebc9dfcaf5c86dd0ce6d78", amount: 1164, network: "tron", label: "$1.2K→Binance (4 txns)" },
     { source: "dist16", target: "binance", hash: "8839be47507837aa477a217ddc50790427abd83c0cedec58286082e50cf6a1ab", amount: 1187, network: "tron", label: "$1.2K→Binance (3 txns)" },
     { source: "dist17", target: "binance", hash: "09a011b756a25150fd1378da160321e1bd44f75bc051f798e5873519b90576c3", amount: 1026, network: "tron", label: "$1.0K→Binance (2 txns)" },
     { source: "dist18", target: "binance", hash: "0b16e7c27e04de42e8e98512d5a308d1e27f5b2a7274449a8dbad9fe66851a87", amount: 723, network: "tron", label: "$723→Binance (2 txns)" },
     { source: "dist19", target: "binance", hash: "fc521bb9be0f4c002ca637bd7aecfc2087055230e825c2d82db2c7f351224c33", amount: 663, network: "tron", label: "$663→Binance (3 txns)" },
-    { source: "dist20", target: "binance", hash: "TRONSCAN_LINK", amount: 460, network: "tron", label: "$460→Binance (3 txns)" },
+    { source: "dist20", target: "binance", hash: "a4a6ba2c0fb2f7e4dab7cdebb92a48a6a1589ad652c506476e8edf364e54cd88", amount: 460, network: "tron", label: "$460→Binance (3 txns)" },
     { source: "dist21", target: "binance", hash: "8b6d5b3fae0d51f72c0917de8c78a56936089c33ab342824a069b3b34c24931f", amount: 412, network: "tron", label: "$412→Binance (2 txns)" },
     { source: "dist22", target: "binance", hash: "7c4047974207f4d073456dce19bd65c7d745fd3428c01abaa22c1057dff8252f", amount: 328, network: "tron", label: "$328→Binance (1 txn)" },
     { source: "dist23", target: "binance", hash: "7393635449e1fc1b4f65f1eff493938c3be07793045e49205f1c060f8e4f6c83", amount: 232, network: "tron", label: "$232→Binance (1 txn)" },
@@ -580,10 +581,10 @@ const DATA = {
     { source: "dist26", target: "binance", hash: "3010fe05e5be71eaa80f19f74de06aa2434adf6880b68259598230a9b9704403", amount: 164, network: "tron", label: "$164→Binance (1 txn)" },
     { source: "dist27", target: "binance", hash: "aab65d2de66a346b281a8db4cfb51d09aaca8ec1b2a32154ad2e3346adeb509e", amount: 164, network: "tron", label: "$164→Binance (1 txn)" },
     { source: "dist28", target: "binance", hash: "d109565876c8f39ef6acad62fb1df1d9fdb88643c653d06f91722af2be473f1e", amount: 164, network: "tron", label: "$164→Binance (1 txn)" },
-    { source: "dist29", target: "binance", hash: "TRONSCAN_LINK", amount: 164, network: "tron", label: "$164→Binance (1 txn)" },
-    { source: "dist30", target: "binance", hash: "TRONSCAN_LINK", amount: 164, network: "tron", label: "$164→Binance (1 txn)" },
-    { source: "dist31", target: "binance", hash: "TRONSCAN_LINK", amount: 164, network: "tron", label: "$164→Binance (1 txn)" },
-    { source: "dist32", target: "binance", hash: "TRONSCAN_LINK", amount: 164, network: "tron", label: "$164→Binance (1 txn)" },
+    { source: "dist29", target: "binance", hash: "75b179bc79345b104d28b918303b2d2c500825eeae713306cb49af6264fd5750", amount: 164, network: "tron", label: "$164→Binance (1 txn)" },
+    { source: "dist30", target: "binance", hash: "4e5ba57945e83d3f5aeeef3ebe0bf3c11545e91d3d66b0801ff9664087567575", amount: 164, network: "tron", label: "$164→Binance (1 txn)" },
+    { source: "dist31", target: "binance", hash: "32376695396b4a116807ae06fc19e752ecd1f6356e12fb352a9b1f55952d4fcb", amount: 164, network: "tron", label: "$164→Binance (1 txn)" },
+    { source: "dist32", target: "binance", hash: "21c0067ba6550a6e8c146df8a540d66235012c498b4a600ee5a2c7b7a89f5ba3", amount: 164, network: "tron", label: "$164→Binance (1 txn)" },
 
     // Scammer → Victim
     { source: "scammer", target: "victim", hash: "6772cdec4b773b3c7e6e038e2ff019f47c1eacaace5afc3b0e47df1fa437410b", amount: 344, network: "tron", label: "$344 trust-build" },
@@ -736,43 +737,7 @@ function showDetail(node) {
       {addr: "TPFuDc...", hash: "32376695396b4a116807ae06fc19e752ecd1f6356e12fb352a9b1f55952d4fcb", amt: 164},
       {addr: "TL5xEs...", hash: "a4a6ba2c0fb2f7e4dab7cdebb92a48a6a1589ad652c506476e8edf364e54cd88", amt: 460},
       {addr: "TPfSzQ...", hash: "21c0067ba6550a6e8c146df8a540d66235012c498b4a600ee5a2c7b7a89f5ba3", amt: 164},
-  
-    {
-      "id": "kucoin",
-      "label": "Kucoin 4\n(TUpHuDki...b678)",
-      "network": "TRON",
-      "type": "exchange",
-      "address": "TUpHuDkiCCmwaTZBHZvQdwWzGNm5t8J2b9",
-      "balance": "$104M USDT",
-      "role": "Secondary Hub (Funding Source)",
-      "tronscan_url": "https://tronscan.org/#/address/TUpHuDkiCCmwaTZBHZvQdwWzGNm5t8J2b9"
-    },
-    {
-      "id": "bybit",
-      "label": "Bybit\n(TU4vEruv...Pvaa)",
-      "network": "TRON",
-      "type": "exchange",
-      "address": "TU4vEruvZwLLkSfV9bNw12EJTPvNr7Pvaa",
-      "balance": "36.98M TRX (~$3.7M)",
-      "role": "Funding Source",
-      "tronscan_url": "https://tronscan.org/#/address/TU4vEruvZwLLkSfV9bNw12EJTPvNr7Pvaa"
-    },
-
-    {
-      "from": "kucoin",
-      "to": "distribution_wallets",
-      "label": "Funding Source",
-      "amount": "Unknown",
-      "hash": "Multiple transactions"
-    },
-    {
-      "from": "bybit",
-      "to": "distribution_wallets",
-      "label": "Funding Source",
-      "amount": "$116 USDT",
-      "hash": "dcdecd4965f3cc6843650681f9ac960ca17148878d39589f40d9d51b5f7b74a9"
-    },
-  ];
+    ];
     distHashes.forEach(d => {
       html += `<div class="tx-item" onclick="copyToClipboard('${d.hash}')">
         <span style="color:#888">${d.addr}</span>
