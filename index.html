@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yepbit/AxiomCQ Scam - Complete Circuit Trace | Law Enforcement Evidence</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { 
+  background: #0a0a0f; 
+  color: #e0e0e0; 
+  font-family: 'Segoe UI', 'Consolas', monospace; 
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Header */
+#header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: linear-gradient(180deg, #0d0d1a 0%, #0d0d1aee 80%, transparent);
+  padding: 8px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid #333;
+}
+#header h1 {
+  font-size: 14px; color: #ff4444; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+#header .subtitle { font-size: 11px; color: #888; }
+#header .case-info { font-size: 10px; color: #666; text-align: right; }
+
+/* Filter Panel */
+#filters {
+  position: fixed; top: 45px; left: 10px; z-index: 999;
+  background: #1a1a2eee; border: 1px solid #333; border-radius: 8px;
+  padding: 12px; width: 240px; max-height: calc(100vh - 120px);
+  overflow-y: auto; font-size: 11px;
+}
+#filters h3 { color: #ff6b6b; font-size: 12px; margin-bottom: 8px; border-bottom: 1px solid #333; padding-bottom: 4px; }
+.filter-group { margin-bottom: 10px; }
+.filter-group label { display: block; color: #aaa; margin-bottom: 3px; font-size: 10px; text-transform: uppercase; }
+.filter-group select, .filter-group input {
+  width: 100%; padding: 4px 6px; background: #0d0d1a; border: 1px solid #444;
+  color: #e0e0e0; border-radius: 4px; font-size: 11px;
+}
+.filter-group select:focus, .filter-group input:focus { border-color: #ff6b6b; outline: none; }
+.filter-btn {
+  width: 100%; padding: 5px; margin-top: 5px; background: #ff4444; color: white;
+  border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;
+}
+.filter-btn:hover { background: #ff6b6b; }
+.filter-btn.reset { background: #444; margin-top: 3px; }
+.filter-btn.reset:hover { background: #666; }
+
+/* Legend */
+#legend {
+  position: fixed; top: 45px; right: 10px; z-index: 999;
+  background: #1a1a2eee; border: 1px solid #333; border-radius: 8px;
+  padding: 10px; width: 180px; font-size: 10px;
+}
+#legend h3 { color: #ff6b6b; font-size: 11px; margin-bottom: 6px; }
+.legend-item { display: flex; align-items: center; margin-bottom: 4px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; flex-shrink: 0; }
+.legend-line { width: 20px; height: 2px; margin-right: 6px; flex-shrink: 0; }
+
+/* Stats Panel */
+#stats {
+  position: fixed; bottom: 10px; left: 10px; z-index: 999;
+  background: #1a1a2eee; border: 1px solid #333; border-radius: 8px;
+  padding: 10px; font-size: 10px; width: 280px;
+}
+#stats h3 { color: #ff6b6b; font-size: 11px; margin-bottom: 4px; }
+.stat-row { display: flex; justify-content: space-between; margin-bottom: 2px; }
+.stat-label { color: #888; }
+.stat-value { color: #4fc3f7; font-weight: 600; }
+
+/* Detail Panel */
+#detail-panel {
+  position: fixed; top: 45px; right: 200px; z-index: 998;
+  background: #1a1a2ef5; border: 1px solid #ff4444; border-radius: 8px;
+  padding: 12px; width: 380px; max-height: calc(100vh - 80px);
+  overflow-y: auto; display: none; font-size: 11px;
+}
+#detail-panel h3 { color: #ff6b6b; font-size: 13px; margin-bottom: 6px; }
+#detail-panel .address { color: #4fc3f7; word-break: break-all; font-family: monospace; font-size: 10px; background: #0d0d1a; padding: 4px; border-radius: 3px; margin-bottom: 6px; cursor: pointer; }
+#detail-panel .address:hover { background: #222; }
+#detail-panel .tx-list { max-height: 300px; overflow-y: auto; }
+#detail-panel .tx-item { 
+  padding: 3px 5px; margin-bottom: 2px; background: #0d0d1a; border-radius: 3px;
+  font-family: monospace; font-size: 9px; cursor: pointer; display: flex; justify-content: space-between;
+}
+#detail-panel .tx-item:hover { background: #222; }
+#detail-panel .tx-hash { color: #81c784; }
+#detail-panel .tx-amount { color: #ffb74d; }
+.close-btn { position: absolute; top: 5px; right: 8px; cursor: pointer; color: #888; font-size: 16px; }
+.close-btn:hover { color: #ff4444; }
+
+/* Graph SVG */
+#graph-container { width: 100vw; height: 100vh; }
+svg { width: 100%; height: 100%; }
+
+.link { stroke-opacity: 0.6; }
+.link:hover { stroke-opacity: 1; }
+
+.node-circle { cursor: pointer; stroke-width: 2; }
+.node-circle:hover { stroke-width: 4; }
+
+.node-label { font-size: 8px; fill: #ccc; pointer-events: none; text-anchor: middle; }
+.edge-label { font-size: 6.5px; fill: #81c784; pointer-events: all; cursor: pointer; font-family: monospace; }
+.edge-label:hover { fill: #ffffff; font-size: 8px; }
+.edge-amount { font-size: 6px; fill: #ffb74d; pointer-events: none; font-family: monospace; }
+
+/* Tooltip */
+.tooltip {
+  position: absolute; background: #1a1a2ef5; border: 1px solid #ff4444;
+  padding: 8px; border-radius: 6px; font-size: 10px; pointer-events: none;
+  z-index: 2000; max-width: 400px; display: none;
+}
+.tooltip .tt-title { color: #ff6b6b; font-weight: 700; margin-bottom: 4px; }
+.tooltip .tt-hash { color: #81c784; word-break: break-all; font-family: monospace; font-size: 9px; }
+.tooltip .tt-amount { color: #ffb74d; font-weight: 600; }
+
+/* Copy notification */
+.copy-notify {
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: #4caf50; color: white; padding: 10px 20px; border-radius: 8px;
+  font-size: 13px; z-index: 9999; display: none; font-weight: 600;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0d0d1a; }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #666; }
+
+/* Search */
+#search-box {
+  width: 100%; padding: 5px 8px; background: #0d0d1a; border: 1px solid #444;
+  color: #e0e0e0; border-radius: 4px; font-size: 11px; margin-bottom: 8px;
+}
+#search-box:focus { border-color: #ff6b6b; outline: none; }
+#search-box::placeholder { color: #555; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div>
+    <h1>⚠ CRYPTO SCAM FUND FLOW — COMPLETE CIRCUIT TRACE</h1>
+    <div class="subtitle">Yepbit.com / AxiomCQ.com — Cross-Chain Laundering Network</div>
+  </div>
+  <div class="case-info">
+    <div>Date: 2026-08-02 | Networks: TRON + Ethereum</div>
+    <div>Total Laundered: $1,528,045 USDT → Binance | Evidence: VERIFIED</div>
+  </div>
+</div>
+
+<div id="filters">
+  <h3>🔍 FILTER CONTROLS</h3>
+  <div class="filter-group">
+    <input type="text" id="search-box" placeholder="Search address or hash...">
+  </div>
+  <div class="filter-group">
+    <label>Network</label>
+    <select id="filter-network">
+      <option value="all">All Networks</option>
+      <option value="tron">TRON (TRC20)</option>
+      <option value="ethereum">Ethereum (ERC20)</option>
+      <option value="bridge">Cross-Chain Bridge</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label>Layer / Role</label>
+    <select id="filter-layer">
+      <option value="all">All Layers</option>
+      <option value="origin">DEX Origins</option>
+      <option value="hub">Network Hubs</option>
+      <option value="source">Funding Sources</option>
+      <option value="scammer">Scammer Wallet</option>
+      <option value="distribution">Distribution Wallets</option>
+      <option value="exchange">Exchanges (Binance/OKX)</option>
+      <option value="victim">Victim Wallets</option>
+      <option value="bridge">Bridge Contracts</option>
+      <option value="eth_deposit">ETH Deposit Addresses</option>
+      <option value="eth_consolidation">ETH Consolidation</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label>Min Amount (USD)</label>
+    <input type="number" id="filter-min-amount" value="0" min="0" step="1000">
+  </div>
+  <div class="filter-group">
+    <label>Max Amount (USD)</label>
+    <input type="number" id="filter-max-amount" value="999999999" min="0" step="1000">
+  </div>
+  <button class="filter-btn" onclick="applyFilters()">APPLY FILTERS</button>
+  <button class="filter-btn reset" onclick="resetFilters()">RESET ALL</button>
+  <div style="margin-top:8px; color:#666; font-size:9px;">
+    <div>Visible nodes: <span id="visible-nodes" style="color:#4fc3f7">—</span></div>
+    <div>Visible edges: <span id="visible-edges" style="color:#81c784">—</span></div>
+  </div>
+</div>
+
+<div id="legend">
+  <h3>📊 LEGEND</h3>
+  <div class="legend-item"><div class="legend-dot" style="background:#4fc3f7"></div> TRON Wallets</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#66bb6a"></div> ETH Wallets</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ffd54f"></div> Bridge Contracts</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ef5350"></div> Exchanges (Binance/OKX)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ab47bc"></div> Victim Wallets</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ff7043"></div> Scammer Wallet</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#78909c"></div> Network Hubs ($100M+)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#26a69a"></div> Distribution Wallets</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#5c6bc0"></div> Funding Sources</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#8d6e63"></div> DEX Origins</div>
+  <hr style="border-color:#333;margin:6px 0">
+  <div class="legend-item"><div class="legend-line" style="background:#81c784"></div> TRON Transfer</div>
+  <div class="legend-item"><div class="legend-line" style="background:#64b5f6"></div> ETH Transfer</div>
+  <div class="legend-item"><div class="legend-line" style="background:#ffd54f"></div> Cross-Chain Bridge</div>
+  <div style="margin-top:6px;color:#666;font-size:9px;">
+    Click hash → copy full<br>
+    Click node → details<br>
+    Scroll → zoom<br>
+    Drag → pan
+  </div>
+</div>
+
+<div id="stats">
+  <h3>📈 CASE STATISTICS</h3>
+  <div class="stat-row"><span class="stat-label">Total Laundered to Binance:</span><span class="stat-value">$1,528,045 USDT</span></div>
+  <div class="stat-row"><span class="stat-label">Common Hub Balance:</span><span class="stat-value">$218,411,778 USDT</span></div>
+  <div class="stat-row"><span class="stat-label">Secondary Hub:</span><span class="stat-value">$104,918,853 USDT</span></div>
+  <div class="stat-row"><span class="stat-label">ETH Deposits (6 txns):</span><span class="stat-value">$3,025.82 USDT</span></div>
+  <div class="stat-row"><span class="stat-label">Distribution Wallets:</span><span class="stat-value">32 → All to Binance</span></div>
+  <div class="stat-row"><span class="stat-label">Funding Sources:</span><span class="stat-value">5 → Scammer Wallet</span></div>
+  <div class="stat-row"><span class="stat-label">Cross-Chain Bridge:</span><span class="stat-value">Confirmed (Bridgers)</span></div>
+  <div class="stat-row"><span class="stat-label">Platform:</span><span class="stat-value">Yepbit.com / AxiomCQ.com</span></div>
+</div>
+
+<div id="detail-panel">
+  <span class="close-btn" onclick="closeDetail()">✕</span>
+  <div id="detail-content"></div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+<div class="copy-notify" id="copy-notify">✓ Hash Copied to Clipboard</div>
+
+<div id="graph-container"></div>
+
+<script>
+// ===== COMPLETE EVIDENCE DATA =====
+const DATA = {
+  nodes: [
+    // DEX Origins
+    { id: "sunswap", label: "SunSwap DEX", type: "dex_origin", network: "tron", layer: "origin", 
+      info: "Anonymous swap origins - untraceable further", balance: "$1.84M+ estimated volume" },
+    
+    // Hub Incoming Sources (to Common Hub)
+    { id: "hub_in_1", label: "TWu8ih...KXwB", type: "tron_wallet", network: "tron", layer: "hub",
+      address: "TWu8ihukiwSc466NAEwtRF5HMbW61uKXwB", info: "Hub Incoming #1", balance: "$1,882,037 sent" },
+    { id: "hub_in_2", label: "TQqgNg...b7Y4", type: "tron_wallet", network: "tron", layer: "hub",
+      address: "TQqgNg13s2DjvXhW1ky4v6TsR8wZGvb7Y4", info: "Recirculation Wallet", balance: "$837,769 sent to hub" },
+    { id: "hub_in_3", label: "TCFNp1...tqYj", type: "tron_wallet", network: "tron", layer: "hub",
+      address: "TCFNp179Lg46D16zKoumd4Poa2WFFdtqYj", info: "Hub Incoming #3", balance: "$700,000 sent" },
+    { id: "hub_in_4", label: "TPjkJb...Ajze", type: "tron_wallet", network: "tron", layer: "hub",
+      address: "TPjkJbvQCdsQRJ5UmKzqVuQzkdqe7KAjze", info: "Hub Incoming #4", balance: "$239,998 sent" },
+    { id: "hub_in_5", label: "TGnC7L...FyJ3r", type: "tron_wallet", network: "tron", layer: "hub",
+      address: "TGnC7LMji8hBpyvZt1TTEJhVpAZ5HFyJ3r", info: "Hub Incoming #5", balance: "$193,074 sent" },
+
+    // Common Hub
+    { id: "common_hub", label: "COMMON HUB\n$218M", type: "hub", network: "tron", layer: "hub",
+      address: "TSUYvQ5tdd3DijCD1uGunGLpftHuSZ12sQ", 
+      info: "Network Operator Hub - Central Treasury\nBalance: $218,411,778 USDT + 71,546 TRX\n356M TRC20 transfers\nFunds ALL 5 scammer sources", 
+      balance: "$218,411,778 USDT" },
+
+    // Secondary Hub
+    { id: "secondary_hub", label: "2nd HUB\n$104M", type: "hub", network: "tron", layer: "hub",
+      address: "TUpHuDkiCCmwaTZBHZvQdwWzGNm5t8J2b9",
+      info: "Secondary Consolidation Hub\nBalance: $104,918,853 USDT\n32.2M TRC20 transfers\nCreated: 2022-01-26",
+      balance: "$104,918,853 USDT" },
+
+    // Hub Outgoing Destinations
+    { id: "hub_out_1", label: "TPK9Nd...TNUX", type: "tron_wallet", network: "tron", layer: "hub",
+      address: "TPK9Ndm8fVJYTJoNjNM7dPSfSmC3iHTNUX", info: "Large Transfer Wallet → splits to 3", balance: "$2,000,001 received" },
+    { id: "hub_out_3", label: "TB4wfg...tzptQ", type: "tron_wallet", network: "tron", layer: "hub",
+      address: "TB4wfg7bNhZfKiWYY9ggMDjFea5N6TzptQ", info: "Distribution Sub-Hub", balance: "$460,000 received" },
+    
+    // Large Transfer Chain
+    { id: "chain_1", label: "TKvzyC...NQrM", type: "tron_wallet", network: "tron", layer: "hub",
+      address: "TKvzyCMoJbnAgmPpqReaFhezE9Fhc3NQrM", info: "Chain Split Point", balance: "$2,000,000 received" },
+    { id: "chain_2", label: "TWYN35...SL9U", type: "tron_wallet", network: "tron", layer: "hub",
+      address: "TWYN35whQ3Ydj459UGaXKZoiL5fFQFSL9U", info: "Large Chain End", balance: "$1,800,000 received" },
+    { id: "chain_3", label: "TQWP6m...CZQx", type: "tron_wallet", network: "tron", layer: "hub",
+      address: "TQWP6mGaGxThxq1585ekX7kghxczs4CZQx", info: "Chain Split #2", balance: "$100,000" },
+    { id: "chain_4", label: "TSKJc2...R3Mj", type: "tron_wallet", network: "tron", layer: "hub",
+      address: "TSKJc2hmw617VXLTejSs7UMQJ5Dv2uR3Mj", info: "Chain Split #3", balance: "$100,000" },
+
+    // Funding Sources
+    { id: "source1", label: "SRC#1\n$1.13M", type: "source", network: "tron", layer: "source",
+      address: "TJXrtnUzkkDxFGRtd2uL4couAFNFWYDak2", 
+      info: "Source #1 (Top Funder)\n$1,129,697 to scammer (28 txns)\nFunded by Common Hub: $993,757\nAlso funded by Source #2: $510,000", balance: "$1,129,697 forwarded" },
+    { id: "source2", label: "SRC#2\n$674K", type: "source", network: "tron", layer: "source",
+      address: "TVyVAT2kQbz12K6VUA7Jt3BXX5QjnJdKQL",
+      info: "Source #2 (P2P Collector)\n$674,000 to scammer (14 txns)\n48 unique small sources avg $1K\nAlso sends to Hub: $1,091,389\nAlso sends to Source #1: $320,000", balance: "$674,000 forwarded" },
+    { id: "source3", label: "SRC#3\n$204K", type: "source", network: "tron", layer: "source",
+      address: "TJXGw7VXrTTw3MCg7WMaCxjbc5voDHLANc",
+      info: "Source #3\n$204,021 to scammer (5 txns)\nFunded by Common Hub: $270,000", balance: "$204,021 forwarded" },
+    { id: "source4", label: "SRC#4\n$40K", type: "source", network: "tron", layer: "source",
+      address: "TDEEVqicxFZ6Garx2YYtn8wQK3tdTHghxz",
+      info: "Source #4\n$40,439 to scammer (2 txns)\nFunded by Hub: $150,000\nAlso from TQFUUE...qPUn: $50,000", balance: "$40,439 forwarded" },
+    { id: "source5", label: "SRC#5\n$30K", type: "source", network: "tron", layer: "source",
+      address: "TYMRvFCkNG4qPs93QZDZMQNbyMrnf3Wqe3",
+      info: "Source #5\n$30,000 to scammer (1 txn)\nFunded by Hub: $50,000", balance: "$30,000 forwarded" },
+
+    // Scammer Wallet
+    { id: "scammer", label: "SCAMMER\nHOT WALLET", type: "scammer", network: "tron", layer: "scammer",
+      address: "TAUWwsDKEapuUJnjZmfRqGGXHWqjvLfP5w",
+      info: "Yepbit Scammer Hot Wallet\n88,596 transactions\nCreated: 2026-06-02\nTotal Received: $2,078,157 USDT\nFrom: Source1($1.13M) + Source2($674K) + Source3($204K) + Source4($40K) + Source5($30K)",
+      balance: "$2,078,157 total received" },
+
+    // Distribution Wallets (top ones shown)
+    { id: "dist1", label: "DIST#1\n$52K", type: "distribution", network: "tron", layer: "distribution",
+      address: "TQmHywLWFkP9ohZR6R9kibWp4DxrNMYXJZ",
+      info: "Distribution Wallet #1 (Top)\n164 from scammer → 22 txns to Binance = $52,133", balance: "$52,133 to Binance" },
+    { id: "dist2", label: "DIST#2\n$13.7K", type: "distribution", network: "tron", layer: "distribution",
+      address: "TDJJAWfdoKHBnUpxtuyA5CPTchFThdyVoW",
+      info: "Distribution Wallet #2\n204 from scammer → 15 txns to Binance = $13,680", balance: "$13,680 to Binance" },
+    { id: "dist3", label: "DIST#3\n$10.9K", type: "distribution", network: "tron", layer: "distribution",
+      address: "TLUmMTrSMX2gArPNMHHkL6VnsSSc4U9oi5",
+      info: "Distribution Wallet #3\n512 from scammer → 7 txns to Binance = $10,873", balance: "$10,873 to Binance" },
+    { id: "dist4", label: "DIST#4\n$7.9K", type: "distribution", network: "tron", layer: "distribution",
+      address: "TLT78WfdeDhc4sAt6dhEcJV43eU6RwELX7",
+      info: "Distribution Wallet #4\n164 from scammer → 17 txns to Binance = $7,888", balance: "$7,888 to Binance" },
+    { id: "dist5", label: "DIST#5\n$7.2K", type: "distribution", network: "tron", layer: "distribution",
+      address: "TDNyXf982ENaVEQbkY35r5XH36NhKKVcov",
+      info: "Distribution Wallet #5\n164 from scammer → 15 txns to Binance = $7,158", balance: "$7,158 to Binance" },
+    { id: "dist_group", label: "27 MORE\nDIST WALLETS", type: "distribution", network: "tron", layer: "distribution",
+      address: "GROUP:TB76mF,TJb3xcp,TJHd8i,TNPm2U,TAQCAv,TJbUXZ,TCqMXE,TPCPpH,TGceNw,TPD2qW,TPd6yt,TPByfr,TKyJ2M,TD2sFs,TMsbWR,TBibW4,TM7ZJj,TM6aLX,TKSfYq,TGWhoT,TL1oKW,TVX1X3,TRyJHh,THF1nm,TPFuDc,TL5xEs,TPfSzQ",
+      info: "Remaining 27 distribution wallets\nAll send EXCLUSIVELY to Binance Hot Wallet 7\nTotal from these: ~$1,467,000 USDT", balance: "Combined ~$1.47M to Binance" },
+
+    // Binance
+    { id: "binance", label: "BINANCE\nHOT WALLET 7", type: "exchange", network: "tron", layer: "exchange",
+      address: "TDqSquXBgUCLYvYC4XZgrprLK589dkhSCf",
+      info: "Binance Cash-Out Hub (Hot Wallet 7)\n99.4M TRC20 transfers\nCreated: 2023-10-18\nReceives from ALL 32 distribution wallets\n86% of sample = Binance deposits\nAvg txn: $128-160 USDT", balance: "$1,528,045 from scam network" },
+
+    // Victim
+    { id: "victim", label: "VICTIM\nWALLET", type: "victim", network: "tron", layer: "victim",
+      address: "TPV7RxcfGtc1q2C5TW1qvGHZ61NeUCKZyx",
+      info: "Victim Wallet\nReceived $344 USDT 'trust-building' withdrawal\nDate: 2026-06-22\nTo encourage further deposits", balance: "Received $344 from scammer" },
+
+    // ETHEREUM SIDE
+    // OKX Hot Wallet
+    { id: "okx", label: "OKX\nHOT WALLET 5", type: "exchange", network: "ethereum", layer: "exchange",
+      address: "0x559432E18b281731c054cD703D4B49872BE4ed53",
+      info: "Victim's Personal Wallet (Uncle)\nSource of ALL 6 victim deposits\nERC20 USDT transfers", balance: "Sent $3,025.82 total" },
+
+    // ETH Deposit Addresses
+    { id: "eth_dep1", label: "ETH Dep#1\n$519", type: "eth_deposit", network: "ethereum", layer: "eth_deposit",
+      address: "0xCa9EF8315019Eff637Aa0aA075A37244F0d48707",
+      info: "ETH Deposit Address #1\n$519.02 USDT on 2026-05-08", balance: "$519.02" },
+    { id: "eth_dep2", label: "ETH Dep#2\n$503", type: "eth_deposit", network: "ethereum", layer: "eth_deposit",
+      address: "0xFfab68F9d27A3E075873FacC6db33888418416fA",
+      info: "ETH Deposit Address #2\n$502.81 USDT on 2026-05-29", balance: "$502.81" },
+    { id: "eth_dep3", label: "ETH Dep#3\n$500", type: "eth_deposit", network: "ethereum", layer: "eth_deposit",
+      address: "0x027BC6475e7F8B667dF9f081A9B89C2fB85c502a",
+      info: "ETH Deposit Address #3\n$500.46 USDT on 2026-06-20", balance: "$500.46" },
+    { id: "eth_dep4", label: "ETH Dep#4\n$500", type: "eth_deposit", network: "ethereum", layer: "eth_deposit",
+      address: "0x5892152bA9BA978D0692d5508bE392EDA53df896",
+      info: "ETH Deposit Address #4\n$500.42 USDT on 2026-06-20", balance: "$500.42" },
+    { id: "eth_dep5", label: "ETH Dep#5\n$500", type: "eth_deposit", network: "ethereum", layer: "eth_deposit",
+      address: "0x3620bFA597bcf944043e2fCe8641FE8986c0b795",
+      info: "ETH Deposit Address #5\n$500.11 USDT on 2026-06-20", balance: "$500.11" },
+    { id: "eth_dep6", label: "ETH Dep#6\n$503", type: "eth_deposit", network: "ethereum", layer: "eth_deposit",
+      address: "0xF8F524E1F32C611851EE21C2FdC462cd8c2e72Ee",
+      info: "ETH Deposit Address #6\n$503.00 USDT on 2026-07-19", balance: "$503.00" },
+
+    // ETH Consolidation Wallets
+    { id: "eth_consol1", label: "ETH CONSOL #1\n$2,523", type: "eth_consolidation", network: "ethereum", layer: "eth_consolidation",
+      address: "0x3d8A5A981aA0bE6304447f1266fe49315a15D48E",
+      info: "ETH Consolidation Wallet #1\nReceives from Deposits 1-5\nTotal: $2,522.82 USDT\nForwards to mixing wallet ($11,981 - 27x multiplier)", balance: "$2,522.82 received" },
+    { id: "eth_consol2", label: "ETH CONSOL #2\n$503", type: "eth_consolidation", network: "ethereum", layer: "eth_consolidation",
+      address: "0xD0561d95dD96B1328EBA7F18C85eabfe7316b678",
+      info: "ETH Consolidation Wallet #2\nReceives from Deposit 6\nTotal: $503.00 USDT\nSends $70,000 to Bridge (multi-source wallet)", balance: "$503.00 received" },
+
+    // Cross-Chain Bridge
+    { id: "bridge", label: "CROSS-CHAIN\nBRIDGE\n(Bridgers)", type: "bridge", network: "bridge", layer: "bridge",
+      address: "0xB685760EBD368a891F27ae547391F4E2A289895b",
+      info: "Bridgers Cross-Chain Contract\nCreator: 0xA2C6d4Fae02c4f58a74Cb046A5a2403057EA6c63\nConverts ERC20 USDT → TRC20 USDT\n$70,000 bridged on 2026-07-29\n\nCOMPLETE FLOW:\n1. Victims deposit USDT from OKX\n2. Forwarded to consolidation wallets\n3. Sent to Bridgers contract\n4. Bridge converts ERC20→TRC20\n5. Funds appear on TRON via SunSwap\n6. Laundered through Hub→Sources→Scammer\n7. Distributed via 32 wallets→Binance",
+      balance: "$70,000 bridged" },
+
+    // PMM Contract
+    { id: "pmm", label: "PMM\n(DEX Router)", type: "bridge", network: "ethereum", layer: "bridge",
+      address: "0x8D90113A1e286a5aB3e496fbD1853F265e5913c6",
+      info: "Private Market Maker Contract\nLikely DEX/swap router for converting tokens before bridging\nInteracts with WETH + USDT", balance: "Token conversion" },
+
+    // ETH Mixing wallet
+    { id: "eth_mixer", label: "ETH Mixer\n$11,981", type: "eth_wallet", network: "ethereum", layer: "eth_consolidation",
+      address: "0x6C5AdD7b70dD8107468c55A799867747fDFE9317",
+      info: "Active mixing wallet\n25 incoming, 25 outgoing transactions\nReceived $11,981 from Consol #1\n27x multiplier vs deposits = multi-victim collection", balance: "$11,981 received" },
+  ],
+
+  links: [
+    // DEX Origins → Common Hub
+    { source: "sunswap", target: "common_hub", hash: "d47d13d997ae6af48e45439887acd9739df1cd3652979de16445ddd9f98a2ac2", amount: 1840000, network: "tron", label: "DEX→Hub" },
+
+    // Hub Incoming
+    { source: "hub_in_1", target: "common_hub", hash: "d47d13d997ae6af48e45439887acd9739df1cd3652979de16445ddd9f98a2ac2", amount: 1882037, network: "tron", label: "$1.88M" },
+    { source: "hub_in_2", target: "common_hub", hash: "9315a7dcdb50e081f3fc8161c698cc93c0cf7c8af75bf83d6ac148fa371e6c7a", amount: 837769, network: "tron", label: "$838K" },
+    { source: "hub_in_3", target: "common_hub", hash: "e41fb03bbb5ddcd3e3e1c9d7e003b4cf52709e3fab1c4468e176515c9efce07e", amount: 700000, network: "tron", label: "$700K" },
+    { source: "hub_in_4", target: "common_hub", hash: "8aef0cd02b8f3d7e404f9e8c8b562849a8201c6d3e0e77d13320722376411a47", amount: 239998, network: "tron", label: "$240K" },
+    { source: "hub_in_5", target: "common_hub", hash: "16799dd2564f6eb32744a75d67a961fb82875e16af1ff3991a6214ba7a5e19ac", amount: 193074, network: "tron", label: "$193K" },
+
+    // Hub Outgoing to Sources
+    { source: "common_hub", target: "source1", hash: "8949b47663ee5564b8af13e6318aced032ced843cc8a9c81d9e9542d62f8f327", amount: 993757, network: "tron", label: "$994K" },
+    { source: "common_hub", target: "source3", hash: "8dc6cc46169ff9eadf7910f829b15b912f9da1d3807e40d4156cd39b90023e6f", amount: 270000, network: "tron", label: "$270K" },
+    { source: "common_hub", target: "source4", hash: "e7e2c1c8802565aa2fd19493059418bcb6b612cccf031421187c8c42a80944d0", amount: 150000, network: "tron", label: "$150K" },
+    { source: "common_hub", target: "source5", hash: "c147b6fc0b3c047bacb12d64b233f2193b8cc4615f0845b4f5eb507aac552587", amount: 50000, network: "tron", label: "$50K" },
+
+    // Hub Outgoing (other)
+    { source: "common_hub", target: "hub_out_1", hash: "310e080c1baf9f8a620cfe36e85e477c3a27a2cb036d71bb7dad0430c26ac100", amount: 2000001, network: "tron", label: "$2M" },
+    { source: "common_hub", target: "hub_in_2", hash: "0406f1c44fa6bfa64b4e2071bd504c203e080462e9515ca889a136189cc805c3", amount: 763745, network: "tron", label: "$764K recirc" },
+    { source: "common_hub", target: "hub_out_3", hash: "fa6ea7c64a2a89c55280b6b1fbd4225f36d860bdf63ff7c6172272088e88313e", amount: 460000, network: "tron", label: "$460K" },
+
+    // Large Transfer Chain
+    { source: "hub_out_1", target: "chain_1", hash: "d1f3a4c951dbdc82a26635f6c033663a149a248bfdbbd23659b7fb19ebf72c54", amount: 2000000, network: "tron", label: "$2M" },
+    { source: "chain_1", target: "chain_2", hash: "60274813aaf154abe1f8472eed2b544a0e8221793044ea5f7c0c69a4a0d3d21f", amount: 1800000, network: "tron", label: "$1.8M" },
+    { source: "chain_1", target: "chain_3", hash: "470834fe0a6b24f98688edc8319d2c09e36af7a5f11187e0f649e43d5eeef729", amount: 100000, network: "tron", label: "$100K" },
+    { source: "chain_1", target: "chain_4", hash: "2ce2948f87744d69e6992ef96f59bc50d8678432a0aade7fd609359470c29d5c", amount: 100000, network: "tron", label: "$100K" },
+
+    // Source2 connections
+    { source: "source2", target: "scammer", hash: "8c20c34fcd81ed99b88c698d6d5d645ce1466a8aacb0d9252683ac1e23407e95", amount: 674000, network: "tron", label: "$674K (14 txns)" },
+    { source: "source2", target: "source1", hash: "dbf125de8f80a99b9b56b4c308d3d45b7536afa7dbcd2ba5721d3cb962d660f1", amount: 510000, network: "tron", label: "$510K→Src1" },
+
+    // Sources → Scammer
+    { source: "source1", target: "scammer", hash: "affe578260a887842e2887cce9748b654dc3919f45aace73799b92c2895b6c1f", amount: 1129697, network: "tron", label: "$1.13M (28 txns)" },
+    { source: "source3", target: "scammer", hash: "297880a70f1037fafc5e0f0bf68897db7d4859e91e20193504dd4af8a483f406", amount: 204021, network: "tron", label: "$204K (5 txns)" },
+    { source: "source4", target: "scammer", hash: "6cb39a91048d0e19415130dd42549ff8d1688c62a39673b7d197dbdb6484ac5d", amount: 40439, network: "tron", label: "$40K (2 txns)" },
+    { source: "source5", target: "scammer", hash: "5458d99682ec541b98b21856e01c3fd630be763fed0cc332db807eeae20bf449", amount: 30000, network: "tron", label: "$30K (1 txn)" },
+
+    // Scammer → Distribution
+    { source: "scammer", target: "dist1", hash: "949b7a8dc970d83cb0154d7804c09839370f473db4fe942164be3b4f4f74ed57", amount: 52133, network: "tron", label: "$52K (164 txns)" },
+    { source: "scammer", target: "dist2", hash: "df68c58018329e3b419eebfe173ba268617f36544ca86a1c1b93df3aa5b74183", amount: 13680, network: "tron", label: "$13.7K" },
+    { source: "scammer", target: "dist3", hash: "870fa7bc79726375be2082cf7fa02bb85a3dd652d3a235e641ad8a9de41d28a2", amount: 10873, network: "tron", label: "$10.9K" },
+    { source: "scammer", target: "dist4", hash: "8f496e192a68531e4c4575133916c0dd62c7d1b75382dcd4893f83689bff21f6", amount: 7888, network: "tron", label: "$7.9K" },
+    { source: "scammer", target: "dist5", hash: "2317bfa995ab0885b719f3395f6ed3f8f50124cc9f3ed9bb7b0819364d3c28e5", amount: 7158, network: "tron", label: "$7.2K" },
+    { source: "scammer", target: "dist_group", hash: "multiple_hashes_see_detail", amount: 1437000, network: "tron", label: "~$1.44M (27 wallets)" },
+
+    // Distribution → Binance
+    { source: "dist1", target: "binance", hash: "949b7a8dc970d83cb0154d7804c09839370f473db4fe942164be3b4f4f74ed57", amount: 52133, network: "tron", label: "$52K→Binance" },
+    { source: "dist2", target: "binance", hash: "df68c58018329e3b419eebfe173ba268617f36544ca86a1c1b93df3aa5b74183", amount: 13680, network: "tron", label: "$13.7K→Binance" },
+    { source: "dist3", target: "binance", hash: "870fa7bc79726375be2082cf7fa02bb85a3dd652d3a235e641ad8a9de41d28a2", amount: 10873, network: "tron", label: "$10.9K→Binance" },
+    { source: "dist4", target: "binance", hash: "8f496e192a68531e4c4575133916c0dd62c7d1b75382dcd4893f83689bff21f6", amount: 7888, network: "tron", label: "$7.9K→Binance" },
+    { source: "dist5", target: "binance", hash: "2317bfa995ab0885b719f3395f6ed3f8f50124cc9f3ed9bb7b0819364d3c28e5", amount: 7158, network: "tron", label: "$7.2K→Binance" },
+    { source: "dist_group", target: "binance", hash: "multiple_hashes_see_detail", amount: 1437000, network: "tron", label: "~$1.44M→Binance" },
+
+    // Scammer → Victim
+    { source: "scammer", target: "victim", hash: "6772cdec4b773b3c7e6e038e2ff019f47c1eacaace5afc3b0e47df1fa437410b", amount: 344, network: "tron", label: "$344 trust-build" },
+
+    // ETHEREUM SIDE
+    // OKX → Deposit Addresses
+    { source: "okx", target: "eth_dep1", hash: "0x574c04f7a9e9571c5bd22a20dfa63fc3ec5c2d5c1275777e5399189673604649", amount: 519, network: "ethereum", label: "$519" },
+    { source: "okx", target: "eth_dep2", hash: "0x7e42f41b9657e9e2074d1f363cb9bbb1757f099d3f6afa8f45e348f469609290", amount: 503, network: "ethereum", label: "$503" },
+    { source: "okx", target: "eth_dep3", hash: "0x5b8aabf02480d5cfeabfd031c32b760b956415d3aac8414d08a39bd3c93b5354", amount: 500, network: "ethereum", label: "$500" },
+    { source: "okx", target: "eth_dep4", hash: "0xac122cb114d3cac488b1c0944bf14ee6821a60c8cfcaf4e04ac8232ac2251e4f", amount: 500, network: "ethereum", label: "$500" },
+    { source: "okx", target: "eth_dep5", hash: "0xf5b91cc4e3f592985ab109873c142208aba93925e19ae2534ce6a44af1411341", amount: 500, network: "ethereum", label: "$500" },
+    { source: "okx", target: "eth_dep6", hash: "0xeee65eba6ea391d90cd26ba2e2fe964d607aae8b976e07cf49945ef3ed8a7c75", amount: 503, network: "ethereum", label: "$503" },
+
+    // Deposits → Consolidation
+    { source: "eth_dep1", target: "eth_consol1", hash: "0x91b8111436c8d4fe1297b6b00264fbebfe27ccc441ba9cbc12141f58de130d00", amount: 519, network: "ethereum", label: "$519 fwd" },
+    { source: "eth_dep2", target: "eth_consol1", hash: "0x0bc4d7cca71e8197a7d371a903d0b40aeb976cbd10458976b542cdd3cfc5e003", amount: 503, network: "ethereum", label: "$503 fwd" },
+    { source: "eth_dep3", target: "eth_consol1", hash: "0x33826fac34f34248a4f2b1c72d71dddc9b7e84d82d3d759cc7e72502c811eb82", amount: 500, network: "ethereum", label: "$500 fwd" },
+    { source: "eth_dep4", target: "eth_consol1", hash: "0xf1b7a88f8b4f695e259448102b44309f0b53b6210cc17a1100603d9f352991c6", amount: 500, network: "ethereum", label: "$500 fwd" },
+    { source: "eth_dep5", target: "eth_consol1", hash: "0xa5af383a515bdaa96be49af0ddd68aa953bfd1b17707c865ad6cec40f9f623c4", amount: 500, network: "ethereum", label: "$500 fwd" },
+    { source: "eth_dep6", target: "eth_consol2", hash: "0x0e5c7b6954963b95980b777dba7f3f08fafaaa65d59e724ddd576d83917221d2", amount: 503, network: "ethereum", label: "$503 fwd" },
+
+    // Consolidation → Bridge/Mixer
+    { source: "eth_consol1", target: "eth_mixer", hash: "0xaa2221fdf6da6b6d68a2d9328a20fcc829860882d6efd7bc9be5d4ce664be718", amount: 11981, network: "ethereum", label: "$11,981 (27x)" },
+    { source: "eth_consol2", target: "bridge", hash: "0x1f85ef6ff5bbf5e09242f4c628a9b33650fa1558444f4ec40d75aacac7108449", amount: 70000, network: "bridge", label: "$70K BRIDGE" },
+    { source: "eth_consol1", target: "pmm", hash: "0xf9f0d4926abc6484d2a868184c29f9a6cbda8b88631373d788dd30cf7fc9d1ab", amount: 6, network: "ethereum", label: "$5.77 swap" },
+
+    // Bridge → TRON (conceptual link)
+    { source: "bridge", target: "sunswap", hash: "0x1f85ef6ff5bbf5e09242f4c628a9b33650fa1558444f4ec40d75aacac7108449", amount: 70000, network: "bridge", label: "ERC20→TRC20 Bridge" },
+  ]
+};
+
+// ===== NODE COLORS =====
+const NODE_COLORS = {
+  dex_origin: "#8d6e63",
+  hub: "#78909c",
+  source: "#5c6bc0",
+  scammer: "#ff7043",
+  distribution: "#26a69a",
+  exchange: "#ef5350",
+  victim: "#ab47bc",
+  bridge: "#ffd54f",
+  tron_wallet: "#4fc3f7",
+  eth_wallet: "#66bb6a",
+  eth_deposit: "#66bb6a",
+  eth_consolidation: "#66bb6a",
+};
+
+const NODE_RADIUS = {
+  dex_origin: 14, hub: 28, source: 18, scammer: 24, distribution: 14,
+  exchange: 22, victim: 16, bridge: 26, tron_wallet: 12, eth_wallet: 14,
+  eth_deposit: 12, eth_consolidation: 16,
+};
+
+const EDGE_COLORS = {
+  tron: "#81c784",
+  ethereum: "#64b5f6",
+  bridge: "#ffd54f",
+};
+
+// ===== BUILD GRAPH =====
+let simulation, svg, g, linkGroup, nodeGroup, edgeLabelGroup;
+let allNodes = DATA.nodes;
+let allLinks = DATA.links;
+let currentNodes = [...allNodes];
+let currentLinks = [...allLinks];
+
+function truncateHash(hash, len=12) {
+  if (!hash || hash.startsWith("multiple")) return hash ? "multiple..." : "";
+  if (hash.startsWith("0x")) return hash.substring(0, 8) + "..." + hash.substring(hash.length - 4);
+  return hash.substring(0, len) + "...";
+}
+
+function formatAmount(amt) {
+  if (amt >= 1000000) return "$" + (amt/1000000).toFixed(1) + "M";
+  if (amt >= 1000) return "$" + (amt/1000).toFixed(1) + "K";
+  return "$" + amt;
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const notify = document.getElementById('copy-notify');
+    notify.style.display = 'block';
+    setTimeout(() => notify.style.display = 'none', 1500);
+  });
+}
+
+function showDetail(node) {
+  const panel = document.getElementById('detail-panel');
+  const content = document.getElementById('detail-content');
+  
+  // Find all links involving this node
+  const relatedLinks = allLinks.filter(l => l.source.id === node.id || l.target.id === node.id || l.source === node.id || l.target === node.id);
+  
+  let html = `<h3>${node.info ? node.info.split('\\n')[0] : node.label}</h3>`;
+  if (node.address) {
+    html += `<div class="address" onclick="copyToClipboard('${node.address}')" title="Click to copy">${node.address}</div>`;
+  }
+  if (node.balance) {
+    html += `<div style="color:#ffb74d;margin-bottom:6px;font-weight:600">${node.balance}</div>`;
+  }
+  if (node.info) {
+    html += `<div style="color:#aaa;margin-bottom:8px;white-space:pre-line;font-size:10px">${node.info}</div>`;
+  }
+  if (relatedLinks.length > 0) {
+    html += `<div style="color:#ff6b6b;margin-bottom:4px;font-weight:600">Transactions (${relatedLinks.length}):</div>`;
+    html += `<div class="tx-list">`;
+    relatedLinks.forEach(link => {
+      const srcLabel = typeof link.source === 'object' ? link.source.label : link.source;
+      const tgtLabel = typeof link.target === 'object' ? link.target.label : link.target;
+      html += `<div class="tx-item" onclick="copyToClipboard('${link.hash}')">
+        <span class="tx-hash" title="${link.hash}">${truncateHash(link.hash, 16)}</span>
+        <span class="tx-amount">${formatAmount(link.amount)}</span>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+  
+  // Add extra hashes for specific nodes
+  if (node.id === 'dist_group') {
+    html += `<div style="color:#ff6b6b;margin-top:8px;margin-bottom:4px;font-weight:600">All 27 Distribution Wallet Hashes:</div>`;
+    html += `<div class="tx-list">`;
+    const distHashes = [
+      {addr: "TB76mF...", hash: "ef5f0b7b96aefecb66145ab343fb5b7facc97dd443c1cab5fe3f6f6f8d5842ce", amt: 1441},
+      {addr: "TJb3xc...", hash: "fc521bb9be0f4c002ca637bd7aecfc2087055230e825c2d82db2c7f351224c33", amt: 663},
+      {addr: "TJHd8i...", hash: "8839be47507837aa477a217ddc50790427abd83c0cedec58286082e50cf6a1ab", amt: 1187},
+      {addr: "TNPm2U...", hash: "7c4047974207f4d073456dce19bd65c7d745fd3428c01abaa22c1057dff8252f", amt: 328},
+      {addr: "TAQCAv...", hash: "0b16e7c27e04de42e8e98512d5a308d1e27f5b2a7274449a8dbad9fe66851a87", amt: 723},
+      {addr: "TJbUXZ...", hash: "8b6d5b3fae0d51f72c0917de8c78a56936089c33ab342824a069b3b34c24931f", amt: 412},
+      {addr: "TCqMXE...", hash: "7393635449e1fc1b4f65f1eff493938c3be07793045e49205f1c060f8e4f6c83", amt: 232},
+      {addr: "TPCPpH...", hash: "228838122addf56092a64f6bfedd62d4089149bdce3a000ab91c38244b7c68e9", amt: 232},
+      {addr: "TGceNw...", hash: "cbf8e27dd3232572c086f236a86f7c755b338c57f2b846030c4da523a9f12626", amt: 4752},
+      {addr: "TPD2qW...", hash: "eb2653ee14ebfca9072f956d81d1b37b5a7a65297fedaf4bff0bad23d7f76e74", amt: 164},
+      {addr: "TPd6yt...", hash: "3010fe05e5be71eaa80f19f74de06aa2434adf6880b68259598230a9b9704403", amt: 164},
+      {addr: "TPByfr...", hash: "aab65d2de66a346b281a8db4cfb51d09aaca8ec1b2a32154ad2e3346adeb509e", amt: 164},
+      {addr: "TKyJ2M...", hash: "09a011b756a25150fd1378da160321e1bd44f75bc051f798e5873519b90576c3", amt: 1026},
+      {addr: "TD2sFn...", hash: "d109565876c8f39ef6acad62fb1df1d9fdb88643c653d06f91722af2be473f1e", amt: 164},
+      {addr: "TMsbWR...", hash: "3b69aabd69388ad81e1cb7010a4a3685890accba70e7c61bc92d6b483ec8abf9", amt: 1170},
+      {addr: "TBibW4...", hash: "75b179bc79345b104d28b918303b2d2c500825eeae713306cb49af6264fd5750", amt: 164},
+      {addr: "TM7ZJj...", hash: "828346ace81e21e830261fc37a2eb9367e1ba4561a24c28dfa3be392ea35a784", amt: 3248},
+      {addr: "TM6aLX...", hash: "4e5ba57945e83d3f5aeeef3ebe0bf3c11545e91d3d66b0801ff9664087567575", amt: 164},
+      {addr: "TKSfYq...", hash: "1433748e0fb9153acc0196c9db09cc3a44a0904f8c64cc071900c6a03d0f76aa", amt: 1523},
+      {addr: "TGWhoT...", hash: "b33ebd960a0efb96c220f0936aa69991602c708c5ff50fe9cd0d544d95ada9ac", amt: 1156},
+      {addr: "TL1oKW...", hash: "c8dbad1f2faddc46b4175b8af192d4ca9bcc920e4d20d385714fabd2a303996d", amt: 4869},
+      {addr: "TVX1X3...", hash: "d3604330e67a706e2a525e54cace96f0183f73d8b87a5af413acf8ab11a2f871", amt: 1165},
+      {addr: "TRyJHh...", hash: "816f484ec09729fba960ed6700ce89937755d7a583cc287542851042c28ab3d5", amt: 5432},
+      {addr: "THF1nm...", hash: "b8d1a203c5f680f4a3b56be59b6d71a2a137eda35bebc9dfcaf5c86dd0ce6d78", amt: 1164},
+      {addr: "TPFuDc...", hash: "32376695396b4a116807ae06fc19e752ecd1f6356e12fb352a9b1f55952d4fcb", amt: 164},
+      {addr: "TL5xEs...", hash: "a4a6ba2c0fb2f7e4dab7cdebb92a48a6a1589ad652c506476e8edf364e54cd88", amt: 460},
+      {addr: "TPfSzQ...", hash: "21c0067ba6550a6e8c146df8a540d66235012c498b4a600ee5a2c7b7a89f5ba3", amt: 164},
+  
+    {
+      "id": "kucoin",
+      "label": "Kucoin 4\n(TUpHuDki...b678)",
+      "network": "TRON",
+      "type": "exchange",
+      "address": "TUpHuDkiCCmwaTZBHZvQdwWzGNm5t8J2b9",
+      "balance": "$104M USDT",
+      "role": "Secondary Hub (Funding Source)",
+      "tronscan_url": "https://tronscan.org/#/address/TUpHuDkiCCmwaTZBHZvQdwWzGNm5t8J2b9"
+    },
+    {
+      "id": "bybit",
+      "label": "Bybit\n(TU4vEruv...Pvaa)",
+      "network": "TRON",
+      "type": "exchange",
+      "address": "TU4vEruvZwLLkSfV9bNw12EJTPvNr7Pvaa",
+      "balance": "36.98M TRX (~$3.7M)",
+      "role": "Funding Source",
+      "tronscan_url": "https://tronscan.org/#/address/TU4vEruvZwLLkSfV9bNw12EJTPvNr7Pvaa"
+    },
+
+    {
+      "from": "kucoin",
+      "to": "distribution_wallets",
+      "label": "Funding Source",
+      "amount": "Unknown",
+      "hash": "Multiple transactions"
+    },
+    {
+      "from": "bybit",
+      "to": "distribution_wallets",
+      "label": "Funding Source",
+      "amount": "$116 USDT",
+      "hash": "dcdecd4965f3cc6843650681f9ac960ca17148878d39589f40d9d51b5f7b74a9"
+    },
+  ];
+    distHashes.forEach(d => {
+      html += `<div class="tx-item" onclick="copyToClipboard('${d.hash}')">
+        <span style="color:#888">${d.addr}</span>
+        <span class="tx-hash" title="${d.hash}">${truncateHash(d.hash, 14)}</span>
+        <span class="tx-amount">$${d.amt}</span>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+  
+  content.innerHTML = html;
+  panel.style.display = 'block';
+}
+
+function closeDetail() {
+  document.getElementById('detail-panel').style.display = 'none';
+}
+
+function initGraph() {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
+  svg = d3.select("#graph-container")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  // Zoom behavior
+  const zoom = d3.zoom()
+    .scaleExtent([0.1, 8])
+    .on("zoom", (event) => {
+      g.attr("transform", event.transform);
+    });
+
+  svg.call(zoom);
+
+  g = svg.append("g");
+
+  // Arrow markers
+  const defs = svg.append("defs");
+  ["tron", "ethereum", "bridge"].forEach(net => {
+    defs.append("marker")
+      .attr("id", `arrow-${net}`)
+      .attr("viewBox", "0 -5 10 10")
+      .attr("refX", 20)
+      .attr("refY", 0)
+      .attr("markerWidth", 6)
+      .attr("markerHeight", 6)
+      .attr("orient", "auto")
+      .append("path")
+      .attr("d", "M0,-5L10,0L0,5")
+      .attr("fill", EDGE_COLORS[net]);
+  });
+
+  linkGroup = g.append("g").attr("class", "links");
+  edgeLabelGroup = g.append("g").attr("class", "edge-labels");
+  nodeGroup = g.append("g").attr("class", "nodes");
+
+  simulation = d3.forceSimulation(currentNodes)
+    .force("link", d3.forceLink(currentLinks).id(d => d.id).distance(120).strength(0.3))
+    .force("charge", d3.forceManyBody().strength(-400))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("collision", d3.forceCollide().radius(d => (NODE_RADIUS[d.type] || 12) + 20))
+    .force("x", d3.forceX(width / 2).strength(0.03))
+    .force("y", d3.forceY(height / 2).strength(0.03))
+    .on("tick", ticked);
+
+  renderGraph();
+  
+  // Initial zoom to fit
+  setTimeout(() => {
+    svg.transition().duration(1000).call(
+      zoom.transform, 
+      d3.zoomIdentity.translate(width*0.05, height*0.1).scale(0.85)
+    );
+  }, 2000);
+}
+
+function renderGraph() {
+  // Links
+  const links = linkGroup.selectAll("line")
+    .data(currentLinks, d => d.source.id + "-" + d.target.id + "-" + d.hash);
+  
+  links.exit().remove();
+  
+  const linksEnter = links.enter()
+    .append("line")
+    .attr("class", "link")
+    .attr("stroke", d => EDGE_COLORS[d.network] || "#81c784")
+    .attr("stroke-width", d => Math.max(1, Math.min(4, Math.log10(d.amount + 1))))
+    .attr("marker-end", d => `url(#arrow-${d.network})`)
+    .on("mouseover", function(event, d) {
+      showTooltip(event, d);
+    })
+    .on("mouseout", hideTooltip);
+
+  // Edge labels (hash + amount)
+  const edgeLabels = edgeLabelGroup.selectAll("g.edge-label-g")
+    .data(currentLinks, d => d.source.id + "-" + d.target.id + "-" + d.hash);
+  
+  edgeLabels.exit().remove();
+  
+  const edgeLabelsEnter = edgeLabels.enter()
+    .append("g")
+    .attr("class", "edge-label-g");
+
+  edgeLabelsEnter.append("text")
+    .attr("class", "edge-label")
+    .text(d => truncateHash(d.hash, 10))
+    .on("click", function(event, d) {
+      event.stopPropagation();
+      copyToClipboard(d.hash);
+    })
+    .on("mouseover", function(event, d) {
+      showTooltip(event, d);
+    })
+    .on("mouseout", hideTooltip);
+
+  edgeLabelsEnter.append("text")
+    .attr("class", "edge-amount")
+    .text(d => formatAmount(d.amount))
+    .attr("dy", 8);
+
+  // Nodes
+  const nodes = nodeGroup.selectAll("g.node")
+    .data(currentNodes, d => d.id);
+  
+  nodes.exit().remove();
+  
+  const nodesEnter = nodes.enter()
+    .append("g")
+    .attr("class", "node")
+    .call(d3.drag()
+      .on("start", dragstarted)
+      .on("drag", dragged)
+      .on("end", dragended))
+    .on("click", function(event, d) {
+      event.stopPropagation();
+      showDetail(d);
+    });
+
+  nodesEnter.append("circle")
+    .attr("class", "node-circle")
+    .attr("r", d => NODE_RADIUS[d.type] || 12)
+    .attr("fill", d => NODE_COLORS[d.type] || "#4fc3f7")
+    .attr("stroke", d => {
+      if (d.type === 'scammer') return '#ff0000';
+      if (d.type === 'bridge') return '#ffeb3b';
+      if (d.type === 'exchange') return '#ff1744';
+      if (d.type === 'victim') return '#e040fb';
+      return '#fff';
+    })
+    .attr("fill-opacity", 0.85);
+
+  nodesEnter.each(function(d) {
+    const g = d3.select(this);
+    const lines = d.label.split('\n');
+    lines.forEach((line, i) => {
+      g.append("text")
+        .attr("class", "node-label")
+        .attr("dy", (NODE_RADIUS[d.type] || 12) + 10 + (i * 10))
+        .text(line)
+        .style("font-size", d.type === 'hub' || d.type === 'scammer' || d.type === 'bridge' ? "9px" : "7.5px")
+        .style("font-weight", d.type === 'hub' || d.type === 'scammer' || d.type === 'bridge' ? "700" : "400")
+        .style("fill", d.type === 'scammer' ? '#ff7043' : d.type === 'bridge' ? '#ffd54f' : '#ccc');
+    });
+  });
+
+  // Pulse animation for key nodes
+  nodesEnter.filter(d => d.type === 'scammer' || d.type === 'bridge' || d.type === 'hub')
+    .append("circle")
+    .attr("r", d => (NODE_RADIUS[d.type] || 12) + 4)
+    .attr("fill", "none")
+    .attr("stroke", d => NODE_COLORS[d.type])
+    .attr("stroke-width", 1)
+    .attr("stroke-opacity", 0.4)
+    .style("animation", "pulse 2s infinite");
+
+  updateCounts();
+}
+
+function ticked() {
+  linkGroup.selectAll("line")
+    .attr("x1", d => d.source.x)
+    .attr("y1", d => d.source.y)
+    .attr("x2", d => d.target.x)
+    .attr("y2", d => d.target.y);
+
+  edgeLabelGroup.selectAll("g.edge-label-g")
+    .attr("transform", d => {
+      const mx = (d.source.x + d.target.x) / 2;
+      const my = (d.source.y + d.target.y) / 2;
+      const angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x) * 180 / Math.PI;
+      const flipAngle = (angle > 90 || angle < -90) ? angle + 180 : angle;
+      return `translate(${mx},${my}) rotate(${flipAngle})`;
+    });
+
+  nodeGroup.selectAll("g.node")
+    .attr("transform", d => `translate(${d.x},${d.y})`);
+}
+
+function dragstarted(event, d) {
+  if (!event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x; d.fy = d.y;
+}
+function dragged(event, d) {
+  d.fx = event.x; d.fy = event.y;
+}
+function dragended(event, d) {
+  if (!event.active) simulation.alphaTarget(0);
+  d.fx = null; d.fy = null;
+}
+
+function showTooltip(event, d) {
+  const tt = document.getElementById('tooltip');
+  const fullHash = d.hash || '';
+  tt.innerHTML = `
+    <div class="tt-title">${d.label || 'Transaction'}</div>
+    <div class="tt-hash">Hash: ${fullHash}</div>
+    <div class="tt-amount">Amount: ${formatAmount(d.amount)}</div>
+    <div style="color:#888;font-size:9px;margin-top:4px">Click hash to copy full value</div>
+    <div style="color:#888;font-size:9px">Network: ${d.network ? d.network.toUpperCase() : 'N/A'}</div>
+  `;
+  tt.style.display = 'block';
+  tt.style.left = (event.pageX + 15) + 'px';
+  tt.style.top = (event.pageY - 10) + 'px';
+}
+
+function hideTooltip() {
+  document.getElementById('tooltip').style.display = 'none';
+}
+
+// ===== FILTERS =====
+function applyFilters() {
+  const network = document.getElementById('filter-network').value;
+  const layer = document.getElementById('filter-layer').value;
+  const minAmount = parseFloat(document.getElementById('filter-min-amount').value) || 0;
+  const maxAmount = parseFloat(document.getElementById('filter-max-amount').value) || 999999999;
+  const searchTerm = document.getElementById('search-box').value.toLowerCase();
+
+  // Filter nodes
+  let filteredNodes = allNodes.filter(n => {
+    if (network !== 'all' && n.network !== network) return false;
+    if (layer !== 'all' && n.layer !== layer) return false;
+    if (searchTerm && !(n.label.toLowerCase().includes(searchTerm) || 
+        (n.address && n.address.toLowerCase().includes(searchTerm)) ||
+        (n.info && n.info.toLowerCase().includes(searchTerm)))) return false;
+    return true;
+  });
+
+  const nodeIds = new Set(filteredNodes.map(n => n.id));
+
+  // Filter links
+  let filteredLinks = allLinks.filter(l => {
+    const srcId = typeof l.source === 'object' ? l.source.id : l.source;
+    const tgtId = typeof l.target === 'object' ? l.target.id : l.target;
+    if (!nodeIds.has(srcId) || !nodeIds.has(tgtId)) return false;
+    if (l.amount < minAmount || l.amount > maxAmount) return false;
+    if (network !== 'all' && l.network !== network && l.network !== 'bridge') return false;
+    if (searchTerm && !(l.hash.toLowerCase().includes(searchTerm))) return false;
+    return true;
+  });
+
+  // If bridge filter, include bridge-related links even if not bridge network
+  if (network === 'bridge') {
+    const bridgeNodeIds = new Set(['bridge', 'eth_consol2', 'sunswap']);
+    filteredLinks = allLinks.filter(l => {
+      const srcId = typeof l.source === 'object' ? l.source.id : l.source;
+      const tgtId = typeof l.target === 'object' ? l.target.id : l.target;
+      return bridgeNodeIds.has(srcId) || bridgeNodeIds.has(tgtId) || l.network === 'bridge';
+    });
+    filteredNodes = allNodes.filter(n => {
+      return bridgeNodeIds.has(n.id) || n.layer === 'bridge' || 
+             n.network === 'ethereum' || n.network === 'bridge';
+    });
+  }
+
+  // Update simulation
+  currentNodes = filteredNodes;
+  currentLinks = filteredLinks.map(l => ({
+    ...l,
+    source: typeof l.source === 'object' ? l.source.id : l.source,
+    target: typeof l.target === 'object' ? l.target.id : l.target,
+  }));
+
+  simulation.nodes(currentNodes);
+  simulation.force("link").links(currentLinks);
+  simulation.alpha(0.5).restart();
+
+  // Clear and re-render
+  linkGroup.selectAll("*").remove();
+  edgeLabelGroup.selectAll("*").remove();
+  nodeGroup.selectAll("*").remove();
+  renderGraph();
+}
+
+function resetFilters() {
+  document.getElementById('filter-network').value = 'all';
+  document.getElementById('filter-layer').value = 'all';
+  document.getElementById('filter-min-amount').value = '0';
+  document.getElementById('filter-max-amount').value = '999999999';
+  document.getElementById('search-box').value = '';
+
+  currentNodes = [...allNodes];
+  currentLinks = allLinks.map(l => ({
+    ...l,
+    source: typeof l.source === 'object' ? l.source.id : l.source,
+    target: typeof l.target === 'object' ? l.target.id : l.target,
+  }));
+
+  simulation.nodes(currentNodes);
+  simulation.force("link").links(currentLinks);
+  simulation.alpha(0.5).restart();
+
+  linkGroup.selectAll("*").remove();
+  edgeLabelGroup.selectAll("*").remove();
+  nodeGroup.selectAll("*").remove();
+  renderGraph();
+}
+
+function updateCounts() {
+  document.getElementById('visible-nodes').textContent = currentNodes.length;
+  document.getElementById('visible-edges').textContent = currentLinks.length;
+}
+
+// Search on Enter
+document.getElementById('search-box').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') applyFilters();
+});
+
+// Click on background to close detail
+document.addEventListener('click', function(e) {
+  if (e.target.tagName === 'svg' || e.target.id === 'graph-container') {
+    closeDetail();
+  }
+});
+
+// Window resize
+window.addEventListener('resize', () => {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  svg.attr("width", width).attr("height", height);
+  simulation.force("center", d3.forceCenter(width / 2, height / 2));
+  simulation.alpha(0.3).restart();
+});
+
+// Initialize
+initGraph();
+</script>
+</body>
+</html>
