@@ -563,8 +563,11 @@ function showDetail(node) {
     relatedLinks.forEach(link => {
       const srcLabel = typeof link.source === 'object' ? link.source.label : link.source;
       const tgtLabel = typeof link.target === 'object' ? link.target.label : link.target;
-      html += `<div class="tx-item" onclick="copyToClipboard('${link.hash}')">
-        <span class="tx-hash" title="${link.hash}">${truncateHash(link.hash, 16)}</span>
+      const explorerUrl = link.network === 'ethereum' || link.network === 'bridge' 
+        ? `https://etherscan.io/tx/${link.hash}`
+        : `https://tronscan.org/#/transaction/${link.hash}`;
+      html += `<div class="tx-item">
+        <a href="${explorerUrl}" target="_blank" class="tx-hash" title="Click to view on ${link.network === 'ethereum' || link.network === 'bridge' ? 'Etherscan' : 'TronScan'}: ${link.hash}" style="color:#81c784;text-decoration:underline;cursor:pointer">${truncateHash(link.hash, 16)}</a>
         <span class="tx-amount">${formatAmount(link.amount)}</span>
       </div>`;
     });
@@ -749,9 +752,14 @@ function renderGraph() {
   edgeLabelsEnter.append("text")
     .attr("class", "edge-label")
     .text(d => truncateHash(d.hash, 10))
+    .style("cursor", "pointer")
+    .style("text-decoration", "underline")
     .on("click", function(event, d) {
       event.stopPropagation();
-      copyToClipboard(d.hash);
+      const explorerUrl = d.network === 'ethereum' || d.network === 'bridge' 
+        ? `https://etherscan.io/tx/${d.hash}`
+        : `https://tronscan.org/#/transaction/${d.hash}`;
+      window.open(explorerUrl, '_blank');
     })
     .on("mouseover", function(event, d) {
       showTooltip(event, d);
