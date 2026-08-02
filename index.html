@@ -439,21 +439,21 @@ const DATA = {
     { source: "source4", target: "scammer", hash: "6cb39a91048d0e19415130dd42549ff8d1688c62a39673b7d197dbdb6484ac5d", amount: 40439, network: "tron", label: "$40K (2 txns)" },
     { source: "source5", target: "scammer", hash: "5458d99682ec541b98b21856e01c3fd630be763fed0cc332db807eeae20bf449", amount: 30000, network: "tron", label: "$30K (1 txn)" },
 
-    // Scammer → Distribution
-    { source: "scammer", target: "dist1", hash: "949b7a8dc970d83cb0154d7804c09839370f473db4fe942164be3b4f4f74ed57", amount: 52133, network: "tron", label: "$52K (164 txns)" },
-    { source: "scammer", target: "dist2", hash: "df68c58018329e3b419eebfe173ba268617f36544ca86a1c1b93df3aa5b74183", amount: 13680, network: "tron", label: "$13.7K" },
-    { source: "scammer", target: "dist3", hash: "870fa7bc79726375be2082cf7fa02bb85a3dd652d3a235e641ad8a9de41d28a2", amount: 10873, network: "tron", label: "$10.9K" },
-    { source: "scammer", target: "dist4", hash: "8f496e192a68531e4c4575133916c0dd62c7d1b75382dcd4893f83689bff21f6", amount: 7888, network: "tron", label: "$7.9K" },
-    { source: "scammer", target: "dist5", hash: "2317bfa995ab0885b719f3395f6ed3f8f50124cc9f3ed9bb7b0819364d3c28e5", amount: 7158, network: "tron", label: "$7.2K" },
-    { source: "scammer", target: "dist_group", hash: "multiple_hashes_see_detail", amount: 1437000, network: "tron", label: "~$1.44M (27 wallets)" },
+    // Scammer → Distribution (MULTIPLE transactions - these are DIFFERENT from Distribution→Binance)
+    { source: "scammer", target: "dist1", hash: "MULTIPLE_164_TXNS_FROM_SCAMMER", amount: 52133, network: "tron", label: "$52K (164 txns from scammer)" },
+    { source: "scammer", target: "dist2", hash: "MULTIPLE_204_TXNS_FROM_SCAMMER", amount: 13680, network: "tron", label: "$13.7K (204 txns)" },
+    { source: "scammer", target: "dist3", hash: "MULTIPLE_512_TXNS_FROM_SCAMMER", amount: 10873, network: "tron", label: "$10.9K (512 txns)" },
+    { source: "scammer", target: "dist4", hash: "MULTIPLE_164_TXNS_FROM_SCAMMER", amount: 7888, network: "tron", label: "$7.9K (164 txns)" },
+    { source: "scammer", target: "dist5", hash: "MULTIPLE_164_TXNS_FROM_SCAMMER", amount: 7158, network: "tron", label: "$7.2K (164 txns)" },
+    { source: "scammer", target: "dist_group", hash: "MULTIPLE_HASHES_27_WALLETS", amount: 1437000, network: "tron", label: "~$1.44M (27 wallets)" },
 
-    // Distribution → Binance
-    { source: "dist1", target: "binance", hash: "949b7a8dc970d83cb0154d7804c09839370f473db4fe942164be3b4f4f74ed57", amount: 52133, network: "tron", label: "$52K→Binance" },
-    { source: "dist2", target: "binance", hash: "df68c58018329e3b419eebfe173ba268617f36544ca86a1c1b93df3aa5b74183", amount: 13680, network: "tron", label: "$13.7K→Binance" },
-    { source: "dist3", target: "binance", hash: "870fa7bc79726375be2082cf7fa02bb85a3dd652d3a235e641ad8a9de41d28a2", amount: 10873, network: "tron", label: "$10.9K→Binance" },
-    { source: "dist4", target: "binance", hash: "8f496e192a68531e4c4575133916c0dd62c7d1b75382dcd4893f83689bff21f6", amount: 7888, network: "tron", label: "$7.9K→Binance" },
-    { source: "dist5", target: "binance", hash: "2317bfa995ab0885b719f3395f6ed3f8f50124cc9f3ed9bb7b0819364d3c28e5", amount: 7158, network: "tron", label: "$7.2K→Binance" },
-    { source: "dist_group", target: "binance", hash: "multiple_hashes_see_detail", amount: 1437000, network: "tron", label: "~$1.44M→Binance" },
+    // Distribution → Binance (VERIFIED hashes - these are the Binance deposit transactions)
+    { source: "dist1", target: "binance", hash: "949b7a8dc970d83cb0154d7804c09839370f473db4fe942164be3b4f4f74ed57", amount: 52133, network: "tron", label: "$52K→Binance (22 txns)" },
+    { source: "dist2", target: "binance", hash: "df68c58018329e3b419eebfe173ba268617f36544ca86a1c1b93df3aa5b74183", amount: 13680, network: "tron", label: "$13.7K→Binance (15 txns)" },
+    { source: "dist3", target: "binance", hash: "870fa7bc79726375be2082cf7fa02bb85a3dd652d3a235e641ad8a9de41d28a2", amount: 10873, network: "tron", label: "$10.9K→Binance (7 txns)" },
+    { source: "dist4", target: "binance", hash: "8f496e192a68531e4c4575133916c0dd62c7d1b75382dcd4893f83689bff21f6", amount: 7888, network: "tron", label: "$7.9K→Binance (17 txns)" },
+    { source: "dist5", target: "binance", hash: "2317bfa995ab0885b719f3395f6ed3f8f50124cc9f3ed9bb7b0819364d3c28e5", amount: 7158, network: "tron", label: "$7.2K→Binance (15 txns)" },
+    { source: "dist_group", target: "binance", hash: "MULTIPLE_HASHES_27_WALLETS", amount: 1437000, network: "tron", label: "~$1.44M→Binance" },
 
     // Scammer → Victim
     { source: "scammer", target: "victim", hash: "6772cdec4b773b3c7e6e038e2ff019f47c1eacaace5afc3b0e47df1fa437410b", amount: 344, network: "tron", label: "$344 trust-build" },
